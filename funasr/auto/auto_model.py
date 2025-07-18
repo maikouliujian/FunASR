@@ -121,14 +121,16 @@ class AutoModel:
 
         log_level = getattr(logging, kwargs.get("log_level", "INFO").upper())
         logging.basicConfig(level=log_level)
-
+        # todo 主模型
         model, kwargs = self.build_model(**kwargs)
 
         # if vad_model is not None, build vad model else None
+        # todo vad【 Voice Activity Detection（语音活动检测）】模型
         vad_model = kwargs.get("vad_model", None)
         vad_kwargs = {} if kwargs.get("vad_kwargs", {}) is None else kwargs.get("vad_kwargs", {})
         if vad_model is not None:
             logging.info("Building VAD model.")
+            # todo 构建新的参数！！！！！！
             vad_kwargs["model"] = vad_model
             vad_kwargs["model_revision"] = kwargs.get("vad_model_revision", "master")
             vad_kwargs["device"] = kwargs["device"]
@@ -171,7 +173,7 @@ class AutoModel:
         self.spk_model = spk_model
         self.spk_kwargs = spk_kwargs
         self.model_path = kwargs.get("model_path")
-
+    # todo 构建语音模型！！！！！！
     @staticmethod
     def build_model(**kwargs):
         assert "model" in kwargs
@@ -260,11 +262,13 @@ class AutoModel:
             )
         kwargs["frontend"] = frontend
         # build model
+        # todo 通过model key获取模型类！！！！！！
         model_class = tables.model_classes.get(kwargs["model"])
         assert model_class is not None, f'{kwargs["model"]} is not registered'
         model_conf = {}
         deep_update(model_conf, kwargs.get("model_conf", {}))
         deep_update(model_conf, kwargs)
+        # todo 初始化模型
         model = model_class(**model_conf)
 
         # init_param
@@ -300,7 +304,7 @@ class AutoModel:
         deep_update(kwargs, cfg)
         res = self.model(*args, kwargs)
         return res
-
+    # todo 推理入口！！！！！！
     def generate(self, input, input_len=None, **cfg):
         if self.vad_model is None:
             return self.inference(input, input_len=input_len, **cfg)

@@ -8,6 +8,7 @@ from funasr.download.name_maps_from_hub import name_maps_ms, name_maps_hf, name_
 def download_model(**kwargs):
     hub = kwargs.get("hub", "ms")
     if hub == "ms" or hub == "modelscope":
+        # todo 去下载不存在的模型
         kwargs = download_from_ms(**kwargs)
     elif hub == "hf" or hub == "huggingface":
         kwargs = download_from_hf(**kwargs)
@@ -28,11 +29,13 @@ def download_model(**kwargs):
 
 def download_from_ms(**kwargs):
     model_or_path = kwargs.get("model")
+    # todo 寻找模型名和模型地址映射关系！！！！！！！
     if model_or_path in name_maps_ms:
         model_or_path = name_maps_ms[model_or_path]
     model_revision = kwargs.get("model_revision", "master")
     if not os.path.exists(model_or_path) and "model_path" not in kwargs:
         try:
+            # todo 下载模型！！！！！！
             model_or_path = get_or_download_model_dir(
                 model_or_path,
                 model_revision,
@@ -219,7 +222,7 @@ def get_or_download_model_dir(
     from modelscope.utils.constant import Invoke, ThirdParty
 
     key = Invoke.LOCAL_TRAINER if is_training else Invoke.PIPELINE
-
+    # todo 如果模型存在，那么去检查是否为最新
     if os.path.exists(model) and check_latest:
         model_cache_dir = model if os.path.isdir(model) else os.path.dirname(model)
         try:
@@ -229,6 +232,9 @@ def get_or_download_model_dir(
         except:
             print("could not check the latest version")
     else:
+        # todo 直接下载模型
+        # todo Downloading Model from https://www.modelscope.cn to directory: /root/.cache/modelscope/hub/models/iic/speech_fsmn_vad_zh-cn-16k-common-pytorch
+        # todo 本地缓存目录：/root/.cache/modelscope/hub/models/iic/speech_fsmn_vad_zh-cn-16k-common-pytorch
         model_cache_dir = snapshot_download(
             model, revision=model_revision, user_agent={Invoke.KEY: key, ThirdParty.KEY: "funasr"}
         )

@@ -3,11 +3,11 @@ import inspect
 from dataclasses import dataclass
 import re
 
-
+# todo 模型注册器！！！！！！
 @dataclass
 class RegisterTables:
     """Registry system for classes."""
-
+    # todo 注册的类
     model_classes = {}
     frontend_classes = {}
     specaug_classes = {}
@@ -45,7 +45,7 @@ class RegisterTables:
                         + " |"
                     )
         print("\n")
-
+    # todo 装饰器！！！！！！
     def register(self, register_tables_key: str, key: str = None) -> callable:
         """Decorator to register a class."""
 
